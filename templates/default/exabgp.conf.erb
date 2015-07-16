@@ -10,10 +10,6 @@ neighbor <%= @neighbor_ipv4 %> {
   }
 
   <% if @enable_ipv4_static_route -%>
-  process route_0 {
-    run /etc/exabgp/route_0_watchdog.sh;
-  }
-
   static {
     <% @route_ipv4.each do |ip| %>
     route <%= ip %> {
@@ -22,7 +18,6 @@ neighbor <%= @neighbor_ipv4 %> {
       local-preference <%= @local_preference %>;
       <% end %>
       community [<%= @community %>];
-      watchdog route_0;
     }
     <% end %>
   }

@@ -26,12 +26,6 @@ end unless node[:recipes].include? 'exabgp::source'
 
 directory '/etc/exabgp'
 
-template '/etc/exabgp/route_0_watchdog.sh' do
-  source 'route_0_watchdog.sh.erb'
-  mode '755'
-  notifies :restart, 'service[exabgp]'
-end
-
 template 'exabgp: config' do
   path '/etc/exabgp/exabgp.conf'
   source 'exabgp.conf.erb'
@@ -42,11 +36,9 @@ template 'exabgp: config' do
              local_preference: node[:exabgp][:local_preference],
              route_ipv4: route('ipv4'),
              enable_ipv4_static_route: node[:exabgp][:ipv4][:enable_static_route],
-
              neighbor_ipv6: node[:exabgp][:ipv6][:neighbor],
              local_address_ipv6: node[:ipv6address],
              route_ipv6: route('ipv6'),
-
              local_as: node[:exabgp][:local_as],
              peer_as: node[:exabgp][:peer_as],
              community: node[:exabgp][:community].join(' '))
