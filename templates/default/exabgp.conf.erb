@@ -33,7 +33,7 @@ neighbor <%= @neighbor_ipv6 %> {
   peer-as <%= @peer_as %>;
   hold-time <%= @hold_time %>;
   family {
-    inet6 unicast;
+    ipv6 unicast;
   }
 
   static {
