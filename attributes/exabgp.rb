@@ -20,3 +20,4 @@ default[:exabgp][:watchdog_flag_file] = '/tmp/exabgp-announce'
 default[:exabgp][:hubot][:enable] = false
 default[:exabgp][:hubot][:url] = 'http://localhost:9998'
 default[:exabgp][:hubot][:secret] = 'secret'
+default[:exabgp][:hubot][:event] = 'sre'

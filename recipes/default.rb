@@ -51,7 +51,8 @@ template '/etc/exabgp/neighbor-changes.rb' do
   source 'neighbor-changes.rb.erb'
   variables hubot_publish: {
               url: node[:exabgp][:hubot][:url],
-              secret: node[:exabgp][:hubot][:secret]
+              secret: node[:exabgp][:hubot][:secret],
+              event: node[:exabgp][:hubot][:event]
             }
   mode 0755
   notifies :restart, 'service[exabgp]'

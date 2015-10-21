@@ -22,8 +22,8 @@ while true
     state = stdout['neighbor']['state']
     output = "#{neighbor} -> #{state}\n"
     host = `hostname`.strip
-    message = "#{host}: #{output}\n------"
-    event = "bgp.neighbor.changes"
+    message = "#{host}: #{output}"
+    event = '<%= @hubot_publish[:event] %>'
     Hubot.publish(message, event) unless host.include?('centos')
   end
   sleep 1
