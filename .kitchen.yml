@@ -12,3 +12,7 @@ suites:
     run_list:
       - recipe[exabgp::source]
     attributes:
+      exabgp:
+        source_version: '3.4'
+        hubot:
+          enable: true

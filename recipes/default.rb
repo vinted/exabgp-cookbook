@@ -36,6 +36,7 @@ template 'exabgp: config' do
              local_preference: node[:exabgp][:local_preference],
              route_ipv4: route('ipv4'),
              enable_ipv4_static_route: node[:exabgp][:ipv4][:enable_static_route],
+             enable_hubot: node[:exabgp][:hubot][:enable],
              neighbor_ipv6: node[:exabgp][:ipv6][:neighbor],
              local_address_ipv6: node[:ip6address],
              route_ipv6: route('ipv6'),
@@ -43,6 +44,16 @@ template 'exabgp: config' do
              peer_as: node[:exabgp][:peer_as],
              community: node[:exabgp][:community].join(' '))
   mode '644'
+  notifies :restart, 'service[exabgp]'
+end
+
+template '/etc/exabgp/neighbor-changes.rb' do
+  source 'neighbor-changes.rb.erb'
+  variables hubot_publish: {
+              url: node[:exabgp][:hubot][:url],
+              secret: node[:exabgp][:hubot][:secret]
+            }
+  mode 0755
   notifies :restart, 'service[exabgp]'
 end
 

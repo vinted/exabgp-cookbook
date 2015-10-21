@@ -16,3 +16,7 @@ default[:exabgp][:source_version] = 'master'
 default[:exabgp][:bin_path] = '/usr/local/bin/exabgp'
 
 default[:exabgp][:watchdog_flag_file] = '/tmp/exabgp-announce'
+
+default[:exabgp][:hubot][:enable] = false
+default[:exabgp][:hubot][:url] = 'http://localhost:9998'
+default[:exabgp][:hubot][:secret] = 'secret'
