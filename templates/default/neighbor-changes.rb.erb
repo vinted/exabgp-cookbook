@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+require 'json'
+require 'net/http'
+
+module Hubot
+  def self.publish(message, event)
+    uri = URI('<%= @hubot_publish[:url] %>/publish')
+    params = { password: '<%= @hubot_publish[:secret] %>',
+               event: event,
+               data: message }
+    uri.query = URI.encode_www_form(params)
+    Net::HTTP.get_response(uri)
+  rescue => e
+    $stderr.puts "Hubot publishing failed: #{e}"
+  end
+end
+
+while true
+  STDIN.each_line do |line|
+    stdout = JSON.parse(line)
+    neighbor = stdout['neighbor']['ip']
+    state = stdout['neighbor']['state']
+    output = "#{neighbor} -> #{state}\n"
+    host = `hostname`.strip
+    message = "#{host}: #{output}\n------"
+    event = "bgp.neighbor.changes"
+    Hubot.publish(message, event) unless host.include?('centos')
+  end
+  sleep 1
+end

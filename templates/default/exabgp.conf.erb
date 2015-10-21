@@ -22,6 +22,14 @@ neighbor <%= @neighbor_ipv4 %> {
     <% end %>
   }
   <% end -%>
+
+  <% if @enable_hubot -%>
+  process states-<%=@neighbor_ipv4 %> {
+    encoder json;
+    neighbor-changes;
+    run /etc/exabgp/neighbor-changes.rb;
+  }
+  <% end %>
 }
 
 <% if @neighbor_ipv6 %>
@@ -47,5 +55,13 @@ neighbor <%= @neighbor_ipv6 %> {
     }
     <% end %>
   }
+
+  <% if @enable_hubot -%>
+  process states-<%= @neighbor_ipv6 %> {
+    encoder json;
+    neighbor-changes;
+    run /etc/exabgp/neighbor-changes.rb;
+  }
+  <% end %>
 }
 <% end %>
