@@ -60,7 +60,7 @@ end
 
 execute 'reload-exabgp-config' do
   action :nothing
-  command 'pkill -USR2 -f bgp.py; true'
+  command 'sv 2 exabgp'
 end
 
 runit_service 'exabgp' do
