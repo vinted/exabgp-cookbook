@@ -44,7 +44,7 @@ template 'exabgp: config' do
              peer_as: node[:exabgp][:peer_as],
              community: node[:exabgp][:community].join(' '))
   mode '644'
-  notifies :restart, 'service[exabgp]'
+  notifies :run, 'execute[reload-exabgp-config]'
 end
 
 template '/etc/exabgp/neighbor-changes.rb' do
@@ -55,7 +55,12 @@ template '/etc/exabgp/neighbor-changes.rb' do
               event: node[:exabgp][:hubot][:event]
             }
   mode 0755
-  notifies :restart, 'service[exabgp]'
+  notifies :run, 'execute[reload-exabgp-config]'
+end
+
+execute 'reload-exabgp-config' do
+  action :nothing
+  command 'pkill -USR2 -f bgp.py; true'
 end
 
 runit_service 'exabgp' do
