@@ -1,3 +1,4 @@
+<% if @neighbor_ipv4 %>
 neighbor <%= @neighbor_ipv4 %> {
   description "Upstream IPv4 provider";
   router-id <%= @router_id %>;
@@ -31,6 +32,7 @@ neighbor <%= @neighbor_ipv4 %> {
   }
   <% end %>
 }
+<% end %>
 
 <% if @neighbor_ipv6 %>
 neighbor <%= @neighbor_ipv6 %> {
