@@ -38,7 +38,7 @@ template 'exabgp: config' do
              enable_ipv4_static_route: node[:exabgp][:ipv4][:enable_static_route],
              enable_hubot: node[:exabgp][:hubot][:enable],
              neighbor_ipv6: node[:exabgp][:ipv6][:neighbor],
-             local_address_ipv6: node[:ip6address],
+             local_address_ipv6: ipv6_next_hop,
              route_ipv6: route('ipv6'),
              local_as: node[:exabgp][:local_as],
              peer_as: node[:exabgp][:peer_as],
