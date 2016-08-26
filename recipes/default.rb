@@ -17,8 +17,10 @@
 # limitations under the License.
 #
 
+systemd_enabled = ::File.open('/proc/1/comm').gets.chomp == 'systemd'
+
 include_recipe 'python'
-include_recipe 'runit'
+include_recipe 'runit' unless systemd_enabled
 
 python_pip 'exabgp' do
   action :install
@@ -44,7 +46,8 @@ template 'exabgp: config' do
              peer_as: node[:exabgp][:peer_as],
              community: node[:exabgp][:community].join(' '))
   mode '644'
-  notifies :run, 'execute[reload-exabgp-config]'
+  notifies :run, 'execute[reload-exabgp-config]' unless systemd_enabled
+  notifies :reload, 'service[exabgp]' if systemd_enabled
 end
 
 template '/etc/exabgp/neighbor-changes.rb' do
@@ -55,7 +58,8 @@ template '/etc/exabgp/neighbor-changes.rb' do
               event: node[:exabgp][:hubot][:event]
             }
   mode 0755
-  notifies :run, 'execute[reload-exabgp-config]'
+  notifies :run, 'execute[reload-exabgp-config]' unless systemd_enabled
+  notifies :reload, 'service[exabgp]' if systemd_enabled
 end
 
 execute 'reload-exabgp-config' do
@@ -65,4 +69,28 @@ end
 
 runit_service 'exabgp' do
   default_logger true
+end unless systemd_enabled
+
+systemd_service 'exabgp' do
+  description 'ExaBGP service'
+  after node[:exabgp][:systemd][:after]
+  condition_path_exists '/etc/exabgp/exabgp.conf'
+
+  service do
+    environment 'exabgp_daemon_daemonize' => 'false'
+    exec_start '/usr/src/exabgp/sbin/exabgp /etc/exabgp/exabgp.conf'
+    exec_reload '/bin/kill -s USR1 $MAINPID'
+    user 'nobody'
+  end
+
+  install do
+    wanted_by 'multi-user.target'
+  end
+
+  only_if { systemd_enabled }
+end
+
+service 'exabgp' do
+  action [:enable, :start]
+  only_if { systemd_enabled }
 end
