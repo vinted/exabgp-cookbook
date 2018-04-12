@@ -72,9 +72,11 @@ runit_service 'exabgp' do
 end unless systemd_enabled
 
 systemd_service 'exabgp' do
-  description 'ExaBGP service'
-  after node[:exabgp][:systemd][:after]
-  condition_path_exists '/etc/exabgp/exabgp.conf'
+  unit do
+    description 'ExaBGP service'
+    after node[:exabgp][:systemd][:after]
+    condition_path_exists '/etc/exabgp/exabgp.conf'
+  end
 
   service do
     environment 'exabgp_daemon_daemonize' => 'false'
