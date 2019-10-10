@@ -28,27 +28,27 @@ include_recipe 'runit' unless systemd_enabled
 
 python_package 'exabgp' do
   action :install
-end unless node[:recipes].include? 'exabgp::source'
+end unless node['recipes'].include? 'exabgp::source'
 
 directory '/etc/exabgp'
 
 template 'exabgp: config' do
   path '/etc/exabgp/exabgp.conf'
   source 'exabgp.conf.erb'
-  variables( router_id: node.ipaddress,
-             hold_time: node[:exabgp][:hold_time],
-             neighbor_ipv4: node[:exabgp][:ipv4][:neighbor],
-             local_address_ipv4: node.ipaddress,
-             local_preference: node[:exabgp][:local_preference],
+  variables( router_id: node['ipaddress'],
+             hold_time: node['exabgp']['hold_time'],
+             neighbor_ipv4: node['exabgp']['ipv4']['neighbor'],
+             local_address_ipv4: node['ipaddress'],
+             local_preference: node['exabgp']['local_preference'],
              route_ipv4: route('ipv4'),
-             enable_ipv4_static_route: node[:exabgp][:ipv4][:enable_static_route],
-             enable_hubot: node[:exabgp][:hubot][:enable],
-             neighbor_ipv6: node[:exabgp][:ipv6][:neighbor],
-             local_address_ipv6: node[:ip6address],
+             enable_ipv4_static_route: node['exabgp']['ipv4']['enable_static_route'],
+             enable_hubot: node['exabgp']['hubot']['enable'],
+             neighbor_ipv6: node['exabgp']['ipv6']['neighbor'],
+             local_address_ipv6: node['ip6address'],
              route_ipv6: route('ipv6'),
-             local_as: node[:exabgp][:local_as],
-             peer_as: node[:exabgp][:peer_as],
-             community: node[:exabgp][:community].join(' '))
+             local_as: node['exabgp']['local_as'],
+             peer_as: node['exabgp']['peer_as'],
+             community: node['exabgp']['community'].join(' '))
   mode '644'
   notifies :run, 'execute[reload-exabgp-config]' unless systemd_enabled
   notifies :reload, 'service[exabgp]' if systemd_enabled
@@ -57,9 +57,9 @@ end
 template '/etc/exabgp/neighbor-changes.rb' do
   source 'neighbor-changes.rb.erb'
   variables hubot_publish: {
-              url: node[:exabgp][:hubot][:url],
-              secret: node[:exabgp][:hubot][:secret],
-              event: node[:exabgp][:hubot][:event]
+              url: node['exabgp']['hubot']['url'],
+              secret: node['exabgp']['hubot']['secret'],
+              event: node['exabgp']['hubot']['event']
             }
   mode 0755
   notifies :run, 'execute[reload-exabgp-config]' unless systemd_enabled
@@ -78,7 +78,7 @@ end unless systemd_enabled
 systemd_service 'exabgp' do
   unit do
     description 'ExaBGP service'
-    after node[:exabgp][:systemd][:after]
+    after node['exabgp']['systemd']['after']
     condition_path_exists '/etc/exabgp/exabgp.conf'
   end
 
