@@ -9,6 +9,6 @@ version          '0.3.0'
 supports 'ubuntu', '>= 12.04'
 supports 'centos', '>= 6.0'
 
-depends 'python'
+depends 'poise-python'
 depends 'runit'
 depends 'systemd', '~> 3.2.2'

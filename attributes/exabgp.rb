@@ -23,3 +23,7 @@ default[:exabgp][:hubot][:secret] = 'secret'
 default[:exabgp][:hubot][:event] = 'sre'
 
 default[:exabgp][:systemd][:after] = %w(network.target)
+
+# lock pip version, poise-python is broken with later
+# https://github.com/vinted/chef/blob/c5af12a421fefbc55e60240329e014f1d7f4a690/cookbooks/vinted-python/attributes/default.rb#L3
+default['poise-python']['options']['pip_version'] = '9.0.3'

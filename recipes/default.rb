@@ -19,10 +19,14 @@
 
 systemd_enabled = ::File.open('/proc/1/comm').gets.chomp == 'systemd'
 
-include_recipe 'python'
+python_runtime 'system' do
+  version '2'
+  provider :system
+end
+
 include_recipe 'runit' unless systemd_enabled
 
-python_pip 'exabgp' do
+python_package 'exabgp' do
   action :install
 end unless node[:recipes].include? 'exabgp::source'
 
