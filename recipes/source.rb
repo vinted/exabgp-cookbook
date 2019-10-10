@@ -6,6 +6,6 @@ git '/usr/src/exabgp' do
   action :sync
 end
 
-node.set[:exabgp][:bin_path] = '/usr/src/exabgp/sbin/exabgp'
+node.override[:exabgp][:bin_path] = '/usr/src/exabgp/sbin/exabgp'
 
 include_recipe 'exabgp::default'
